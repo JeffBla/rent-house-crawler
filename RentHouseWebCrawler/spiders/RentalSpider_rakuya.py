@@ -2,10 +2,12 @@ import re
 import scrapy
 import logging
 from collections import defaultdict
+from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
+from RentHouseWebCrawler.items import RentalItem
 
 
-class RentalSpider(scrapy.Spider):
-    name = 'rental'
+class RentalSpider_rakuya(scrapy.Spider):
+    name = 'rakuya'
     allowed_domains = ['rakuya.com.tw']  # Replace with the actual domain
     start_urls = [
         f'https://www.rakuya.com.tw/rent/rent_search?search=city&city={cnt}&upd=1'
@@ -14,6 +16,11 @@ class RentalSpider(scrapy.Spider):
     logger = logging.getLogger(name)
     logger.info(f'Domain: {allowed_domains}')
     logger.info(f'Starting URL: {start_urls}')
+
+    custom_settings = {
+        # Close the spider after processing 1000 items. Since it has too many data.
+        'CLOSESPIDER_ITEMCOUNT': 1000
+    }
 
     def parse(self, response):
         # Extract house listings
@@ -26,7 +33,6 @@ class RentalSpider(scrapy.Spider):
             imgStr = imgStr.split("'")[1]
             self.house_imgUrls.append(imgStr)
 
-        self.logger.info(f'house_imgUrls: {self.house_imgUrls}')
         # house info
         for self.house_page in self.house_urls:
             yield scrapy.Request(self.house_page, callback=self.ParseHouse)
@@ -37,14 +43,28 @@ class RentalSpider(scrapy.Spider):
         num_pages = int(re.findall(r'\b\d+\b',
                                    num_pages)[-1])  # e.g. 第 1 / 209 頁
         for i in range(2, num_pages + 1):
-            next_page = response.urljoin(f'&page={i}')
+            # Parse the URL
+            url_parts = urlparse(response.url)
+            query_params = parse_qs(url_parts.query)
+
+            # Update the 'page' parameter
+            query_params['page'] = [str(i)]
+
+            # Reconstruct the URL with the updated query parameters
+            new_query = urlencode(query_params, doseq=True)
+            next_page = urlunparse(
+                (url_parts.scheme, url_parts.netloc, url_parts.path,
+                 url_parts.params, new_query, url_parts.fragment))
+            self.logger.info(f'Next page: {next_page}')
             yield scrapy.Request(next_page, self.parse)
 
     def ParseHouse(self, response):
         property_info = defaultdict(lambda: None)
         property_info['title'] = response.css('span.title::text').get()
-        property_info['price'] = response.css('span.price::text').get()
-        property_info['address'] = response.css('h1.txt__address a::text')
+        price = response.css('span.txt__price-total::text').get()
+        property_info['price'] = int(price.replace(',', ''))
+        property_info['address'] = response.css(
+            'h1.txt__address::text')[1].get().strip()
         property_info['published_by'] = response.css('span.name::text').get()
         obj_infos = response.css('div.block__info-sub div.list__info-sub')
         for obj_info in obj_infos:
@@ -58,13 +78,13 @@ class RentalSpider(scrapy.Spider):
             for idx, cond in enumerate(conds):
                 if cond == '樓層/樓高':
                     property_info['floor'] = vals[idx]
-                elif cond == '型態':
-                    property_info['house_type'] = vals[idx]
                 elif cond == '類型':
+                    property_info['house_type'] = vals[idx]
+                elif cond == '型態':
                     property_info['building_type'] = vals[idx]
                 elif cond == '格局':
                     property_info['layout'] = vals[idx]
-                elif cond == '最短租期':
+                elif cond == '短期租賃':
                     property_info['min_rent_period'] = vals[idx]
                 elif cond == '性別要求':
                     property_info['gender_req'] = vals[idx]
@@ -77,22 +97,22 @@ class RentalSpider(scrapy.Spider):
             property_info['img_url'] = self.house_imgUrls[
                 self.house_urls.index(self.house_page)]
 
-        yield {
-            'title': property_info['title'],
-            'price': property_info['price'],
-            'address': property_info['address'],
-            'published_by': property_info['published_by'],
-            'area': property_info['area'],
-            'floor': property_info['floor'],
-            'house_type': property_info['house_type'],
-            'building_type': property_info['building_type'],
-            'layout': property_info['layout'],
-            'min_rent_period': property_info['min_rent_period'],
-            'gender_req': property_info['gender_req'],
-            # 'facilities': property_info['facilities'], # error due to it can't be serialized
-            'url': property_info['url'],
-            'img_url': property_info['img_url']
-        }
+        item = RentalItem()
+        item['title'] = property_info['title']
+        item['price'] = property_info['price']
+        item['address'] = property_info['address']
+        item['published_by'] = property_info['published_by']
+        item['area'] = property_info['area']
+        item['floor'] = property_info['floor']
+        item['house_type'] = property_info['house_type']
+        item['building_type'] = property_info['building_type']
+        item['layout'] = property_info['layout']
+        item['min_rent_period'] = property_info['min_rent_period']
+        item['gender_req'] = property_info['gender_req']
+        # item['facilities'] = property_info['facilities']
+        item['url'] = property_info['url']
+        item['img_url'] = property_info['img_url']
+        yield item
 
 
 if __name__ == '__main__':
@@ -104,5 +124,5 @@ if __name__ == '__main__':
     from scrapy.utils.project import get_project_settings
 
     process = CrawlerProcess(get_project_settings())
-    process.crawl(RentalSpider)
+    process.crawl(RentalSpider_rakuya)
     process.start()
