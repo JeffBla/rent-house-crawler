@@ -1,19 +1,16 @@
 import scrapy
 import logging
 from collections import defaultdict
+from scrapy_redis.spiders import RedisSpider
+
 from RentHouseWebCrawler.items import RentalItem
 
 
-class RentalSpider_ddroom(scrapy.Spider):
+class RentalSpider_ddroom(RedisSpider):
     name = 'ddroom'
     allowed_domains = ['api.dd-room.com',
                        'dd-room.com']  # Replace with the actual domain
-    start_urls = [
-        'https://api.dd-room.com/api/v1/search?category=house&order=recommend&sort=desc&page=1'
-    ]  # Starting URL
-    logger = logging.getLogger(name)
-    logger.info(f'Domain: {allowed_domains}')
-    logger.info(f'Starting URL: {start_urls}')
+    redis_key = f'{name}:start_urls'
 
     def __init__(self, *args, **kwargs):
         super(RentalSpider_ddroom, self).__init__(*args, **kwargs)
@@ -40,7 +37,8 @@ class RentalSpider_ddroom(scrapy.Spider):
         for (i) in range(2, num_pages + 1):
             next_page = f'https://api.dd-room.com/api/v1/search?category=house&order=recommend&sort=desc&page={i}'
             self.logger.info(f'Next page: {next_page}')
-            yield scrapy.Request(next_page, self.parse)
+            # push the URL into Redis
+            self.server.lpush(self.redis_key, next_page)
 
     def ParseHouse(self, idx, house_info):
         property_info = defaultdict(lambda: None)

@@ -3,19 +3,15 @@ import scrapy
 import logging
 from collections import defaultdict
 from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
+from scrapy_redis.spiders import RedisSpider
+
 from RentHouseWebCrawler.items import RentalItem
 
 
-class RentalSpider_rakuya(scrapy.Spider):
+class RentalSpider_rakuya(RedisSpider):
     name = 'rakuya'
     allowed_domains = ['rakuya.com.tw']  # Replace with the actual domain
-    start_urls = [
-        f'https://www.rakuya.com.tw/rent/rent_search?search=city&city={cnt}&upd=1'
-        for cnt in range(21)
-    ]  # Starting URL
-    logger = logging.getLogger(name)
-    logger.info(f'Domain: {allowed_domains}')
-    logger.info(f'Starting URL: {start_urls}')
+    redis_key = f'{name}:start_urls'
 
     custom_settings = {
         # Close the spider after processing 1000 items. Since it has too many data.
@@ -56,7 +52,9 @@ class RentalSpider_rakuya(scrapy.Spider):
                 (url_parts.scheme, url_parts.netloc, url_parts.path,
                  url_parts.params, new_query, url_parts.fragment))
             self.logger.info(f'Next page: {next_page}')
-            yield scrapy.Request(next_page, self.parse)
+
+            # push the URL into Redis
+            self.server.lpush(self.redis_key, next_page)
 
     def ParseHouse(self, response):
         property_info = defaultdict(lambda: None)

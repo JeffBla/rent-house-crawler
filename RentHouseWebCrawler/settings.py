@@ -1,3 +1,8 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 BOT_NAME = 'RentHouseWebCrawler'
 
 SPIDER_MODULES = ['RentHouseWebCrawler.spiders']
@@ -33,3 +38,18 @@ RANDOMIZE_DOWNLOAD_DELAY = True
 ITEM_PIPELINES = {
     "RentHouseWebCrawler.pipelines.MongoPipeline": 300,
 }
+
+# Distributed crawling settings
+
+# Enables scheduling storing requests queue in redis.
+SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+
+# Ensure all spiders share same duplicates filter through redis.
+DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+
+# Configure Redis connection
+REDIS_HOST = os.getenv('REDIS_HOST')  # Replace with your Redis server's IP
+REDIS_PORT = os.getenv('REDIS_PORT')  # Default Redis port
+
+# Set the idle time before closing the spider
+SCHEDULER_IDLE_BEFORE_CLOSE = 10

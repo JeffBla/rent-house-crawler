@@ -6,7 +6,7 @@ import logging
 
 
 class MongoPipeline:
-    collection_name = "house_items"
+    collection_name = os.getenv("MONGO_COLLECTION")
 
     def __init__(self, mongo_uri, mongo_port, mongo_db):
         self.mongo_uri = mongo_uri
@@ -20,7 +20,7 @@ class MongoPipeline:
         return cls(
             mongo_uri=os.getenv("MONGO_URI"),
             mongo_port=int(os.getenv("MONGO_PORT")),
-            mongo_db=os.getenv("MONGO_DATABASE"),
+            mongo_db=os.getenv("MONGO_DB"),
         )
 
     def open_spider(self, spider):
