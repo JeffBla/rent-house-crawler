@@ -29,3 +29,7 @@ RANDOMIZE_DOWNLOAD_DELAY = True
 # LOG_LEVEL = 'INFO'
 # LOG_FILE = 'log.log'
 # LOG_FILE_APPEND = False
+
+ITEM_PIPELINES = {
+    "RentHouseWebCrawler.pipelines.MongoPipeline": 300,
+}
