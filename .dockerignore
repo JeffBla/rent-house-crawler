@@ -1,0 +1,16 @@
+# env
+.env
+
+# vscode
+.vscode
+
+# python
+**/__pycache__/
+
+# output
+RentHouseInfo
+
+# testing volume
+mongodb
+
+redis

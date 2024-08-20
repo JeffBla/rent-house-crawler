@@ -1,0 +1,79 @@
+version: "3"
+services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6381:6379"
+    volumes:
+      - redis_data:/data
+
+  master:
+    image: scrapy_rent_crawler
+    container_name: master
+    depends_on:
+      - redis
+    environment:
+      - MONGO_URI=host.docker.internal
+      - MONGO_PORT=27018
+      - MONGO_DB=rentWebDB
+      - MONGO_COLLECTION=house_items
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    volumes:
+      - .:/usr/src/app
+    command: python ./master_node.py
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  scrapy_worker_1:
+    image: scrapy_rent_crawler
+    container_name: scrapy_worker_1
+    depends_on:
+      - master
+    environment:
+      - MONGO_URI=host.docker.internal
+      - MONGO_PORT=27018
+      - MONGO_DB=rentWebDB
+      - MONGO_COLLECTION=house_items
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    command: scrapy crawl ddroom
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  scrapy_worker_2:
+    image: scrapy_rent_crawler
+    container_name: scrapy_worker_2
+    depends_on:
+      - master
+    environment:
+      - MONGO_URI=host.docker.internal
+      - MONGO_PORT=27018
+      - MONGO_DB=rentWebDB
+      - MONGO_COLLECTION=house_items
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    command: scrapy crawl rakuya
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  scrapy_worker_3:
+    image: scrapy_rent_crawler
+    container_name: scrapy_worker_3
+    depends_on:
+      - master
+    environment:
+      - MONGO_URI=host.docker.internal
+      - MONGO_PORT=27018
+      - MONGO_DB=rentWebDB
+      - MONGO_COLLECTION=house_items
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    command: scrapy crawl rakuya
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  # redis_data: ~/Project/RentHouseCrawler/redis/volume
+  redis_data:
