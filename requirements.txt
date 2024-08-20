@@ -1,55 +1,58 @@
-appdirs @ file:///home/conda/feedstock_root/build_artifacts/appdirs_1603108395799/work
-attrs @ file:///home/conda/feedstock_root/build_artifacts/attrs_1722977137225/work
-Automat @ file:///home/conda/feedstock_root/build_artifacts/automat_1667331175863/work
-bcrypt @ file:///home/conda/feedstock_root/build_artifacts/bcrypt_1721690000890/work
-Brotli @ file:///home/conda/feedstock_root/build_artifacts/brotli-split_1695989787169/work
-certifi @ file:///home/conda/feedstock_root/build_artifacts/certifi_1720457958366/work/certifi
-cffi @ file:///home/conda/feedstock_root/build_artifacts/cffi_1723018375617/work
-charset-normalizer @ file:///home/conda/feedstock_root/build_artifacts/charset-normalizer_1698833585322/work
+appdirs==1.4.4
+attrs==24.2.0
+Automat==22.10.0
+bcrypt==4.2.0
+Brotli==1.1.0
+certifi==2024.7.4
+cffi==1.17.0
+charset-normalizer==3.3.2
 constantly==15.1.0
-cryptography @ file:///home/conda/feedstock_root/build_artifacts/cryptography-split_1721521248934/work
-cssselect @ file:///home/conda/feedstock_root/build_artifacts/cssselect_1666980406338/work
-defusedxml @ file:///home/conda/feedstock_root/build_artifacts/defusedxml_1615232257335/work
+cryptography==43.0.0
+cssselect==1.2.0
+defusedxml==0.7.1
 dnspython==2.6.1
-filelock @ file:///home/conda/feedstock_root/build_artifacts/filelock_1719088281970/work
-h2 @ file:///home/conda/feedstock_root/build_artifacts/h2_1634280454336/work
+filelock==3.15.4
+h2==4.1.0
 hpack==4.0.0
-hyperframe @ file:///home/conda/feedstock_root/build_artifacts/hyperframe_1619110129307/work
-hyperlink @ file:///home/conda/feedstock_root/build_artifacts/hyperlink_1610092164190/work
-idna @ file:///home/conda/feedstock_root/build_artifacts/idna_1713279365350/work
-incremental @ file:///home/conda/feedstock_root/build_artifacts/incremental_1722304162160/work
-itemadapter @ file:///home/conda/feedstock_root/build_artifacts/itemadapter_1715111453050/work
-itemloaders @ file:///home/conda/feedstock_root/build_artifacts/itemloaders_1717440375591/work
-jmespath @ file:///home/conda/feedstock_root/build_artifacts/jmespath_1655568249366/work
-lxml @ file:///home/conda/feedstock_root/build_artifacts/lxml_1715598413874/work
-numpy @ file:///home/conda/feedstock_root/build_artifacts/numpy_1721965817794/work/dist/numpy-2.0.1-cp311-cp311-linux_x86_64.whl#sha256=98d30be5f0bddf2db4f3ec6d1fc5915839028169a59cb5695f881d7decbd7bed
-packaging @ file:///home/conda/feedstock_root/build_artifacts/packaging_1718189413536/work
-pandas @ file:///home/conda/feedstock_root/build_artifacts/pandas_1715897625506/work
-parsel @ file:///home/conda/feedstock_root/build_artifacts/parsel_1714637952682/work
-Protego @ file:///home/conda/feedstock_root/build_artifacts/protego_1712316608681/work
-pyasn1 @ file:///home/conda/feedstock_root/build_artifacts/pyasn1_1713209357222/work
-pyasn1_modules @ file:///home/conda/feedstock_root/build_artifacts/pyasn1-modules_1713209683338/work
-pycparser @ file:///home/conda/feedstock_root/build_artifacts/pycparser_1711811537435/work
+hyperframe==6.0.1
+hyperlink==21.0.0
+idna==3.7
+incremental==24.7.2
+itemadapter==0.9.0
+itemloaders==1.3.1
+jmespath==1.0.1
+lxml==5.2.2
+numpy==2.0.1
+packaging==24.1
+pandas==2.2.2
+parsel==1.9.1
+pip==24.2
+Protego==0.3.1
+pyasn1==0.6.0
+pyasn1_modules==0.4.0
+pycparser==2.22
 PyDispatcher==2.0.5
 pymongo==4.8.0
-pyOpenSSL @ file:///home/conda/feedstock_root/build_artifacts/pyopenssl_1722587090966/work
-PySocks @ file:///home/conda/feedstock_root/build_artifacts/pysocks_1661604839144/work
-python-dateutil @ file:///home/conda/feedstock_root/build_artifacts/python-dateutil_1709299778482/work
+pyOpenSSL==24.2.1
+PySocks==1.7.1
+python-dateutil==2.9.0
 python-dotenv==1.0.1
-pytz @ file:///home/conda/feedstock_root/build_artifacts/pytz_1706886791323/work
-queuelib @ file:///home/conda/feedstock_root/build_artifacts/queuelib_1714989370868/work
+pytz==2024.1
+queuelib==1.7.0
 redis==5.0.8
-requests @ file:///home/conda/feedstock_root/build_artifacts/requests_1717057054362/work
-requests-file @ file:///home/conda/feedstock_root/build_artifacts/requests-file_1716356557602/work
-Scrapy @ file:///home/conda/feedstock_root/build_artifacts/scrapy_1715855429206/work
+requests==2.32.3
+requests-file==2.1.0
+Scrapy==2.11.2
 scrapy-redis==0.9.1
-service-identity @ file:///home/conda/feedstock_root/build_artifacts/service-identity-build_1700936484042/work
-six @ file:///home/conda/feedstock_root/build_artifacts/six_1620240208055/work
-tldextract @ file:///home/conda/feedstock_root/build_artifacts/tldextract_1710828352964/work
-Twisted @ file:///home/conda/feedstock_root/build_artifacts/twisted_1709332278390/work
-typing_extensions @ file:///home/conda/feedstock_root/build_artifacts/typing_extensions_1717802530399/work
-tzdata @ file:///home/conda/feedstock_root/build_artifacts/python-tzdata_1707747584337/work
-urllib3 @ file:///home/conda/feedstock_root/build_artifacts/urllib3_1719391292974/work
-w3lib @ file:///home/conda/feedstock_root/build_artifacts/w3lib_1718193888625/work
-zope.interface @ file:///home/conda/feedstock_root/build_artifacts/zope.interface_1722978605871/work
+service-identity==21.1.0
+setuptools==72.1.0
+six==1.16.0
+tldextract==5.1.2
+Twisted==24.3.0
+typing_extensions==4.12.2
+tzdata==2024.1
+urllib3==2.2.2
+w3lib==2.2.1
+wheel==0.44.0
+zope.interface==7.0.1
 zstandard==0.23.0
