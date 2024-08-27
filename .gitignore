@@ -4,5 +4,3 @@ redis/volume
 
 # setting doc
 **/__pycache__/
-
-.vscode
