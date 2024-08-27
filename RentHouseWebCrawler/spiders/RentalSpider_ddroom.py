@@ -1,5 +1,3 @@
-import scrapy
-import logging
 from collections import defaultdict
 from scrapy_redis.spiders import RedisSpider
 
@@ -47,12 +45,8 @@ class RentalSpider_ddroom(RedisSpider):
         property_info['address'] = house_info['address']['complete']
         property_info['published_by'] = house_info['role']
         property_info['area'] = house_info['ping']
-        property_info['floor'] = str(house_info['floor'])
+        property_info['floor'] = house_info['floor']
         property_info['house_type'] = house_info['type_space_name']
-        # property_info['building_type'] = house_info['category']
-        # property_info['layout'] = list(map(lambda x: x['layout'], house_list))
-        # property_info['min_rent_period'] = vals[idx]
-        # property_info['gender_req'] = vals[idx]
 
         # url
         property_info['url'] = self.house_page[idx]
@@ -66,13 +60,9 @@ class RentalSpider_ddroom(RedisSpider):
         item['area'] = property_info['area']
         item['floor'] = property_info['floor']
         item['house_type'] = property_info['house_type']
-        item['building_type'] = property_info['building_type']
-        item['layout'] = property_info['layout']
-        item['min_rent_period'] = property_info['min_rent_period']
-        item['gender_req'] = property_info['gender_req']
-        # item['facilities'] = property_info['facilities']
         item['url'] = property_info['url']
         item['img_url'] = property_info['img_url']
+        item['coming_from'] = self.name
         return item
 
 

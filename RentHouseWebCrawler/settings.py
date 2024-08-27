@@ -13,6 +13,8 @@ USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
 
+CLOSESPIDER_ITEMCOUNT = 1000
+
 FEEDS = {
     'RentHouseInfo.json': {
         'format': 'json',

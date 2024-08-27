@@ -13,10 +13,7 @@ class RentalSpider_rakuya(RedisSpider):
     allowed_domains = ['rakuya.com.tw']  # Replace with the actual domain
     redis_key = f'{name}:start_urls'
 
-    custom_settings = {
-        # Close the spider after processing 1000 items. Since it has too many data.
-        'CLOSESPIDER_ITEMCOUNT': 1000
-    }
+    logger = logging.getLogger("rakuya")
 
     def parse(self, response):
         # Extract house listings
@@ -24,14 +21,18 @@ class RentalSpider_rakuya(RedisSpider):
         # cover image
         house_imgStrs = house_list.css('a.obj-cover::attr(style)').getall()
         self.house_urls = house_list.css('a.obj-cover::attr(href)').getall()
-        self.house_imgUrls = []
+        house_imgUrls = []
         for imgStr in house_imgStrs:
             imgStr = imgStr.split("'")[1]
-            self.house_imgUrls.append(imgStr)
+            house_imgUrls.append(imgStr)
 
         # house info
-        for self.house_page in self.house_urls:
-            yield scrapy.Request(self.house_page, callback=self.ParseHouse)
+        for idx, house_page in enumerate(self.house_urls):
+            self.logger.info(
+                f'House page: {house_page}, img_url: {house_imgUrls[idx]}')
+            yield scrapy.Request(house_page,
+                                 callback=self.ParseHouse,
+                                 cb_kwargs=dict(img_url=house_imgUrls[idx]))
 
         # next page
         # Follow pagination links
@@ -56,7 +57,7 @@ class RentalSpider_rakuya(RedisSpider):
             # push the URL into Redis
             self.server.lpush(self.redis_key, next_page)
 
-    def ParseHouse(self, response):
+    def ParseHouse(self, response, img_url=None):
         property_info = defaultdict(lambda: None)
         property_info['title'] = response.css('span.title::text').get()
         price = response.css('span.txt__price-total::text').get()
@@ -78,22 +79,10 @@ class RentalSpider_rakuya(RedisSpider):
                     property_info['floor'] = vals[idx]
                 elif cond == '類型':
                     property_info['house_type'] = vals[idx]
-                elif cond == '型態':
-                    property_info['building_type'] = vals[idx]
-                elif cond == '格局':
-                    property_info['layout'] = vals[idx]
-                elif cond == '短期租賃':
-                    property_info['min_rent_period'] = vals[idx]
-                elif cond == '性別要求':
-                    property_info['gender_req'] = vals[idx]
 
-            # facilities
-            property_info['facilities'] = response.css('li.is--block b::text')
-
-            # url
-            property_info['url'] = self.house_page
-            property_info['img_url'] = self.house_imgUrls[
-                self.house_urls.index(self.house_page)]
+        # url
+        property_info['url'] = response.url
+        property_info['img_url'] = img_url
 
         item = RentalItem()
         item['title'] = property_info['title']
@@ -101,15 +90,19 @@ class RentalSpider_rakuya(RedisSpider):
         item['address'] = property_info['address']
         item['published_by'] = property_info['published_by']
         item['area'] = property_info['area']
-        item['floor'] = property_info['floor']
-        item['house_type'] = property_info['house_type']
-        item['building_type'] = property_info['building_type']
-        item['layout'] = property_info['layout']
-        item['min_rent_period'] = property_info['min_rent_period']
-        item['gender_req'] = property_info['gender_req']
-        # item['facilities'] = property_info['facilities']
+        try:
+            floor_num_str = property_info['floor'].split('/')[0]
+        except:
+            floor_num_str = None
+        if floor_num_str != None and floor_num_str != '整棟' and floor_num_str[
+                0].isdigit():
+            item['floor'] = int(re.search('\d+', floor_num_str).group())
+        else:
+            item['floor'] = None
+        item['house_type'] = property_info['house_type'].split('/')[0]
         item['url'] = property_info['url']
         item['img_url'] = property_info['img_url']
+        item['coming_from'] = self.name
         yield item
 
 
