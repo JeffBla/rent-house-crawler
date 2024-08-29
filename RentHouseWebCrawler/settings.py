@@ -24,7 +24,7 @@ FEEDS = {
     }
 }
 
-DOWNLOAD_DELAY = 2
+DOWNLOAD_DELAY = 4
 AUTOTHROTTLE_ENABLED = True
 AUTOTHROTTLE_START_DELAY = 5
 AUTOTHROTTLE_MAX_DELAY = 60
@@ -55,3 +55,14 @@ REDIS_PORT = os.getenv('REDIS_PORT')  # Default Redis port
 
 # Set the idle time before closing the spider
 SCHEDULER_IDLE_BEFORE_CLOSE = 10
+
+# Dynamic spider settings - Selenium
+TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
+
+DOWNLOADER_MIDDLEWARES = {
+    'RentHouseWebCrawler.middlewares.SeleniumMiddleware': 800
+}
+
+SELENIUM_DRIVER_NAME = 'chrome'
+SELENIUM_DRIVER_EXECUTABLE_PATH = './chromedriver'
+SELENIUM_DRIVER_ARGUMENTS = ['--headless']

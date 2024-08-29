@@ -35,6 +35,15 @@
       "args": ["crawl", "rakuya"],
       "console": "integratedTerminal",
       "preLaunchTask": "rakuya lpush to redis"
+    },
+    {
+      "name": "Scrapy housefun Spider",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "scrapy",
+      "args": ["crawl", "housefun"],
+      "console": "integratedTerminal",
+      "preLaunchTask": "housefun lpush to redis"
     }
   ]
 }

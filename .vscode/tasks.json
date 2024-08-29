@@ -34,6 +34,23 @@
         "kind": "build",
         "isDefault": true
       }
+    },
+    {
+      "label": "housefun lpush to redis",
+      "type": "shell",
+      "command": "redis-cli",
+      "args": [
+        "-p",
+        "6380",
+        "lpush",
+        "housefun:start_urls",
+        "'https://rent.housefun.com.tw/'"
+      ],
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
     }
   ]
 }
